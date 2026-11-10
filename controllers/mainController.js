@@ -1,13 +1,85 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const Suti = require("../models/Suti");
+const Ar = require("../models/Ar");
+const Tartalom = require("../models/Tartalom");
 
 exports.homeIndex = (req, res) => { res.render("home"); };
 exports.userIndex = (req, res) => { res.render("user"); };
 exports.adminIndex = (req, res) => { res.render("admin"); };
 exports.contactIndex = (req, res) => { res.render("contact"); };
 exports.crudIndex = (req, res) => { res.render("crud"); };
-exports.databaseIndex = (req, res) => { res.render("database"); };
-exports.diagramIndex = (req, res) => { res.render("diagram"); };
+exports.databaseIndex = async (req, res) => {
+    try {
+        const arak = await Ar.find().sort({ id: 1 }).lean();
+        const sutik = await Suti.find().lean();
+        const tartalmak = await Tartalom.find().lean();
+
+        const sutiMap = new Map(
+            sutik.map(suti => [suti.id, suti])
+        );
+
+        const tartalomMap = new Map();
+
+        tartalmak.forEach(t => {
+            if (!tartalomMap.has(t.sutiid)) {
+                tartalomMap.set(t.sutiid, []);
+            }
+
+            tartalomMap.get(t.sutiid).push(t.mentes);
+        });
+
+        const sorok = arak.map(ar => {
+            const suti = sutiMap.get(ar.sutiid);
+
+            return {
+                nev: suti ? suti.nev : "Ismeretlen sütemény",
+                tartalom: (tartalomMap.get(ar.sutiid) || [])
+                    .filter(Boolean)
+                    .join(", "),
+                ar: ar.ertek,
+                egyseg: ar.egyseg || "-"
+            };
+        });
+
+        res.render("database", {
+            sorok: sorok
+        });
+
+    } catch (error) {
+        console.error("Adatbázis lekérdezési hiba:", error);
+        res.status(500).send("Hiba történt az adatok betöltésekor!");
+    }
+};
+
+exports.diagramIndex = async (req, res) => {
+    try {
+        const statisztika = await Suti.aggregate([
+            {
+                $group: {
+                    _id: "$tipus",
+                    darab: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { darab: -1 }
+            }
+        ]);
+
+        const labels = statisztika.map(item => item._id);
+        const adatok = statisztika.map(item => item.darab);
+
+        res.render("diagram", {
+            labels,
+            adatok
+        });
+
+    } catch (error) {
+        console.error("Diagram lekérdezési hiba:", error);
+        res.status(500).send("Hiba történt a diagram betöltésekor!");
+    }
+};
+
 exports.messagesIndex = (req, res) => { res.render("messages"); };
 
 

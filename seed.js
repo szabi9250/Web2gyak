@@ -2,6 +2,11 @@ const Suti = require("./models/Suti");
 const Ar = require("./models/Ar");
 const Tartalom = require("./models/Tartalom");
 
+// --- EZ MEGCSINÁLJA A VIZSGÁLATOT ---
+console.log("----------------------------------------");
+console.log("Suti import tipusa:", typeof Suti);
+console.log("Suti értéke:", Suti);
+console.log("----------------------------------------");
 
 const sutiData = [
     { id: 1, nev: 'Süni', tipus: 'vegyes', dijazott: 0 },
@@ -145,6 +150,7 @@ const sutiData = [
     { id: 139, nev: 'Mákos guba', tipus: 'torta', dijazott: 0 }
 ];
 
+// 2. ÁRAK ADATAI (208 db)
 const arData = [
     { id: 1, sutiid: 32, ertek: 500, egyseg: 'db' },
     { id: 2, sutiid: 76, ertek: 10900, egyseg: '16 szeletes' },
@@ -356,6 +362,7 @@ const arData = [
     { id: 208, sutiid: 89, ertek: 4700, egyseg: '8 szeletes' }
 ];
 
+// 3. TARTALOM / MENTES ADATOK
 const tartalomData = [
     { id: 4, sutiid: 91, mentes: 'G' },
     { id: 5, sutiid: 137, mentes: 'G' },

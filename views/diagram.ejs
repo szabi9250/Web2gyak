@@ -1,4 +1,83 @@
 <%- include("partials/header") %>
-<h1>User page</h1>
-<p>Only for logged in users..</p>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <h1>Sütemények típus szerinti megoszlása</h1>
+
+    <div class="chart-container">
+        <canvas id="sutiChart"></canvas>
+    </div>
+
+    <script>
+        const labels = <%- JSON.stringify(labels) %>;
+        const adatok = <%- JSON.stringify(adatok) %>;
+
+        const ctx = document.getElementById("sutiChart");
+
+        new Chart(ctx, {
+            type: "bar",
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label: "Sütemények száma (db)",
+                    data: adatok,
+
+                    backgroundColor: [
+                        "rgba(255, 99, 132, 0.7)",
+                        "rgba(54, 162, 235, 0.7)",
+                        "rgba(255, 206, 86, 0.7)",
+                        "rgba(75, 192, 192, 0.7)",
+                        "rgba(153, 102, 255, 0.7)",
+                        "rgba(255, 159, 64, 0.7)",
+                        "rgba(100, 200, 100, 0.7)",
+                        "rgba(200, 100, 200, 0.7)",
+                        "rgba(120, 120, 120, 0.7)"
+                    ],
+
+                    borderColor: "rgba(80, 80, 80, 0.5)",
+                    borderWidth: 1
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Sütemények száma típusonként"
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        },
+                        title: {
+                            display: true,
+                            text: "Darabszám"
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Sütemény típusa"
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 <%- include("partials/footer") %>

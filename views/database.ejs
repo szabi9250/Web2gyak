@@ -1,4 +1,28 @@
 <%- include("partials/header") %>
-<h1>User page</h1>
-<p>Only for logged in users..</p>
+    <h1>Sütemények árlistája</h1>
+    <style>
+
+        
+    </style>
+    <table>
+        <thead>
+            <tr>
+                <th>Süti</th>
+                <th>Tartalom</th>
+                <th>Ár</th>
+                <th>Egység</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% sorok.forEach(sor => { %>
+                <tr>
+                    <td><%= sor.nev %></td>
+                    <td><%= sor.tartalom %></td>
+                    <td><%= sor.ar %></td>
+                    <td><%= sor.egyseg %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
 <%- include("partials/footer") %>

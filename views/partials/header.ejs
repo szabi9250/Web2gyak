@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body class="is-preload">
+        <div id="header">
+
+        <h1><a href="/" id="logo">Web-Programozás II. gyakorlat beadandó</a></h1>
+        <div id="page-wrapper">
+        <nav id="nav">
+            <ul>
+            <li><a href="/">Kezdőlap</a></li>
+            <li><a href="/database">Adatbázis</a></li>
+            <li><a href="/contact">Kapcsolat</a></li>
+            <li><a href="/diagram">Diagram</a></li>
+            <% if(user){ %><li><a href="/messages">Üzenetek</a></li> <% } %>
+            <% if(user){ %><li><a href="/user">Felhasználó</a></li> <% } %>
+            <% if(user && user.role=="admin"){ %><li><a href="/admin">Admin</a></li> <% } %>
+            <% if(user && user.role=="admin"){ %><li><a href="/crud">CRUD</a></li> <% } %>
+            <% if(!user){ %><li><a href="/login">Bejelentkezés</a></li> <li><a href="/register">Regisztráció</a></li> <% }else{ %>
+            <%= user.username %> <li><a href="/logout">Kilépés</a></li> <% } %>
+            </ul>
+        </nav>
+        </div>
+        </div>
+        <hr>

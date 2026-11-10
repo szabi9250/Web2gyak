@@ -4,6 +4,12 @@ const bcrypt = require("bcrypt");
 exports.homeIndex = (req, res) => { res.render("home"); };
 exports.userIndex = (req, res) => { res.render("user"); };
 exports.adminIndex = (req, res) => { res.render("admin"); };
+exports.contactIndex = (req, res) => { res.render("contact"); };
+exports.crudIndex = (req, res) => { res.render("crud"); };
+exports.databaseIndex = (req, res) => { res.render("database"); };
+exports.diagramIndex = (req, res) => { res.render("diagram"); };
+exports.messagesIndex = (req, res) => { res.render("messages"); };
+
 
 exports.registerGet = (req, res) => { res.render("register"); };
 exports.registerPost = async (req, res) => {

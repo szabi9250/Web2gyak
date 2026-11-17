@@ -3,11 +3,83 @@ const bcrypt = require("bcrypt");
 const Suti = require("../models/Suti");
 const Ar = require("../models/Ar");
 const Tartalom = require("../models/Tartalom");
+const Message = require("../models/Message");
 
 exports.homeIndex = (req, res) => { res.render("home"); };
 exports.userIndex = (req, res) => { res.render("user"); };
 exports.adminIndex = (req, res) => { res.render("admin"); };
-exports.contactIndex = (req, res) => { res.render("contact"); };
+
+exports.contactIndex = (req, res) => {
+    res.render("contact", {
+        errors: [],
+        form: {
+            name: "",
+            email: "",
+            text: ""
+        }
+    });
+};
+
+exports.contactPost = async (req, res) => {
+    const form = {
+        name: typeof req.body?.name === "string"
+            ? req.body.name.trim()
+            : "",
+        email: typeof req.body?.email === "string"
+            ? req.body.email.trim()
+            : "",
+        text: typeof req.body?.text === "string"
+            ? req.body.text.trim()
+            : ""
+    };
+
+    const errors = [];
+
+    if (form.name.length < 2 || form.name.length > 100) {
+        errors.push("A név hossza 2 és 100 karakter között legyen!");
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (
+        form.email.length > 254 ||
+        !emailPattern.test(form.email)
+    ) {
+        errors.push("Adj meg egy érvényes e-mail-címet!");
+    }
+
+    if (form.text.length < 10 || form.text.length > 2000) {
+        errors.push("Az üzenet hossza 10 és 2000 karakter között legyen!");
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).render("contact", {
+            errors,
+            form
+        });
+    }
+
+    try {
+        await Message.create({
+            name: form.name,
+            email: form.email,
+            text: form.text
+        });
+
+        req.session.message = "Az üzenetedet sikeresen elküldtük!";
+        return res.redirect("/contact");
+    } catch (error) {
+        console.error("Üzenet mentési hiba:", error);
+
+        return res.status(500).render("contact", {
+            errors: [
+                "Az üzenet mentése nem sikerült. Próbáld újra később!"
+            ],
+            form
+        });
+    }
+};
+
 exports.crudIndex = (req, res) => { res.render("crud"); };
 exports.databaseIndex = async (req, res) => {
     try {

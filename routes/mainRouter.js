@@ -27,6 +27,7 @@ router.get("/user", isLoggedIn, controller.userIndex);
 router.get("/admin", isAdmin, controller.adminIndex);
 router.get("/database", controller.databaseIndex);
 router.get("/contact", controller.contactIndex);
+router.post("/contact", controller.contactPost);
 router.get("/diagram", controller.diagramIndex);
 router.get("/messages", isLoggedIn, controller.messagesIndex);
 router.get("/crud", isAdmin, controller.crudIndex);

@@ -152,7 +152,23 @@ exports.diagramIndex = async (req, res) => {
     }
 };
 
-exports.messagesIndex = (req, res) => { res.render("messages"); };
+exports.messagesIndex = async (req, res) => {
+    try {
+        const messages = await Message.find()
+            .sort({ createdAt: -1, _id: -1 })
+            .lean();
+
+        res.render("messages", {
+            messages
+        });
+    } catch (error) {
+        console.error("Üzenetek lekérdezési hiba:", error);
+
+        res.status(500).send(
+            "Hiba történt az üzenetek betöltésekor!"
+        );
+    }
+};
 
 
 exports.registerGet = (req, res) => { res.render("register"); };

@@ -1,4 +1,68 @@
 <%- include("partials/header") %>
-<h1>Bejelentkezett felhasználói oldal</h1>
-<p>Csak bejelentkezett felhasználó érheti el.</p>
+
+<main class="container">
+    <h1>Kapcsolat</h1>
+
+    <p>Küldj üzenetet az oldal tulajdonosának!</p>
+
+    <% if (message) { %>
+        <p role="status"><%= message %></p>
+    <% } %>
+
+    <% if (errors.length > 0) { %>
+        <div role="alert">
+            <p>Kérjük, javítsd az alábbi hibákat:</p>
+
+            <ul>
+                <% errors.forEach(function(error) { %>
+                    <li><%= error %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% } %>
+
+    <form action="/contact" method="POST">
+        <div>
+            <label for="name">Név:</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="<%= form.name %>"
+                minlength="2"
+                maxlength="100"
+                autocomplete="name"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="email">E-mail-cím:</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="<%= form.email %>"
+                maxlength="254"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="text">Üzenet:</label>
+            <textarea
+                id="text"
+                name="text"
+                rows="6"
+                minlength="10"
+                maxlength="2000"
+                required
+            ><%= form.text %></textarea>
+        </div>
+
+        <button type="submit">Üzenet küldése</button>
+    </form>
+</main>
+
 <%- include("partials/footer") %>

@@ -1,4 +1,49 @@
 <%- include("partials/header") %>
-<h1>User page</h1>
-<p>Only for logged in users..</p>
+
+<main class="container">
+    <h1>Beérkezett üzenetek</h1>
+
+    <p>Az üzenetek a legfrissebbtől a legrégebbi felé jelennek meg.</p>
+
+    <% if (messages.length === 0) { %>
+        <p>Még nem érkezett üzenet.</p>
+    <% } else { %>
+        <div class="messages-table-wrapper">
+            <table class="messages-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Név</th>
+                        <th scope="col">E-mail-cím</th>
+                        <th scope="col">Üzenet</th>
+                        <th scope="col">Küldés ideje</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% messages.forEach(function(item) { %>
+                        <tr>
+                            <td><%= item.name %></td>
+                            <td><%= item.email %></td>
+                            <td class="message-text"><%= item.text %></td>
+                            <td>
+                                <time datetime="<%= item.createdAt.toISOString() %>">
+                                    <%= item.createdAt.toLocaleString("hu-HU", {
+                                        timeZone: "Europe/Budapest",
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        second: "2-digit"
+                                    }) %>
+                                </time>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</main>
+
 <%- include("partials/footer") %>

@@ -80,7 +80,15 @@ exports.contactPost = async (req, res) => {
     }
 };
 
-exports.crudIndex = (req, res) => { res.render("crud"); };
+exports.crudIndex = async (req, res) => {
+    const [arak, sutik] = await Promise.all([
+        Ar.find().sort({ id: 1 }).lean(),
+        Suti.find().lean()
+    ]);
+
+    const sutiNevek = new Map(sutik.map(suti => [suti.id, suti.nev]));
+    res.render("crud", { arak, sutiNevek });
+};
 exports.databaseIndex = async (req, res) => {
     try {
         const arak = await Ar.find().sort({ id: 1 }).lean();

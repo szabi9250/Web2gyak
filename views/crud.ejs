@@ -1,4 +1,28 @@
 <%- include("partials/header") %>
-<h1>User page</h1>
-<p>Only for logged in users..</p>
+
+<main class="container">
+    <h1>Süteményárak kezelése</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Azonosító</th>
+                <th>Sütemény</th>
+                <th>Ár (Ft)</th>
+                <th>Egység</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% arak.forEach(ar => { %>
+                <tr>
+                    <td><%= ar.id %></td>
+                    <td><%= sutiNevek.get(ar.sutiid) ?? "Ismeretlen sütemény" %></td>
+                    <td><%= ar.ertek %></td>
+                    <td><%= ar.egyseg || "–" %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</main>
+
 <%- include("partials/footer") %>

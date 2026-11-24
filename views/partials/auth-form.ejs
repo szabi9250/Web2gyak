@@ -1,0 +1,29 @@
+<main class="auth-page">
+    <section class="auth-card" aria-labelledby="auth-title">
+        <h1 id="auth-title"><%= title %></h1>
+
+        <% if (message) { %>
+            <p class="auth-message" role="status"><%= message %></p>
+        <% } %>
+
+        <form method="post" action="<%= action %>">
+            <div>
+                <label for="username">Felhasználónév</label>
+                <input id="username" name="username" type="text"
+                       autocomplete="username" required>
+            </div>
+
+            <div>
+                <label for="password">Jelszó</label>
+                <input id="password" name="password" type="password"
+                       autocomplete="<%= passwordAutocomplete %>" required>
+            </div>
+
+            <button type="submit"><%= title %></button>
+        </form>
+
+        <p class="auth-switch">
+            <%= switchText %> <a href="<%= switchUrl %>"><%= switchLabel %></a>
+        </p>
+    </section>
+</main>

@@ -1,8 +1,10 @@
 <%- include("partials/header") %>
-<% if(message){ %><p class="message"><%= message %></p><% } %>
-<form method="POST">
-    <input name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
-    <button>Registration</button>
-</form>
+<%- include("partials/auth-form", {
+    title: "Regisztráció",
+    action: "/register",
+    passwordAutocomplete: "new-password",
+    switchText: "Már van fiókod?",
+    switchUrl: "/login",
+    switchLabel: "Jelentkezz be"
+}) %>
 <%- include("partials/footer") %>

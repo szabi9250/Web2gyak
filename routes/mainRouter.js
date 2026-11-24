@@ -31,5 +31,8 @@ router.post("/contact", controller.contactPost);
 router.get("/diagram", controller.diagramIndex);
 router.get("/messages", isLoggedIn, controller.messagesIndex);
 router.get("/crud", isAdmin, controller.crudIndex);
+router.post("/crud", isAdmin, controller.crudSave);
+router.get("/crud/:arId/edit", isAdmin, controller.crudIndex);
+router.post("/crud/:arId/edit", isAdmin, controller.crudSave);
 
 module.exports = router;

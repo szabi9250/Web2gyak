@@ -1,28 +1,100 @@
 <%- include("partials/header") %>
 
-<main class="container">
+<main class="container crud-page">
     <h1>Süteményárak kezelése</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Azonosító</th>
-                <th>Sütemény</th>
-                <th>Ár (Ft)</th>
-                <th>Egység</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% arak.forEach(ar => { %>
-                <tr>
-                    <td><%= ar.id %></td>
-                    <td><%= sutiNevek.get(ar.sutiid) ?? "Ismeretlen sütemény" %></td>
-                    <td><%= ar.ertek %></td>
-                    <td><%= ar.egyseg || "–" %></td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
+    <% if (message) { %>
+        <p class="crud-message" role="status"><%= message %></p>
+    <% } %>
+
+    <section class="crud-panel">
+        <h2><%= szerkesztettAr ? "Ár szerkesztése" : "Új ár felvétele" %></h2>
+
+        <form class="crud-form" method="post"
+              action="<%= szerkesztettAr ? '/crud/' + szerkesztettAr._id + '/edit' : '/crud' %>">
+            <input type="hidden" name="crudToken" value="<%= crudToken %>">
+
+            <% if (!szerkesztettAr) { %>
+                <div>
+                    <label for="id">Árazonosító</label>
+                    <input id="id" name="id" type="number" min="1" step="1" required>
+                </div>
+            <% } %>
+
+            <div>
+                <label for="sutiid">Sütemény</label>
+                <select id="sutiid" name="sutiid" required>
+                    <option value="">Válassz süteményt</option>
+                    <% sutik.forEach(suti => { %>
+                        <option value="<%= suti.id %>"
+                            <%= suti.id === szerkesztettAr?.sutiid ? "selected" : "" %>>
+                            <%= suti.nev %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div>
+                <label for="ertek">Ár (Ft)</label>
+                <input id="ertek" name="ertek" type="number" min="0" step="1"
+                       value="<%= szerkesztettAr?.ertek ?? '' %>" required>
+            </div>
+
+            <div>
+                <label for="egyseg">Egység (opcionális)</label>
+                <input id="egyseg" name="egyseg" type="text" maxlength="50"
+                       value="<%= szerkesztettAr?.egyseg ?? '' %>">
+            </div>
+
+            <div class="crud-form-actions">
+                <button type="submit">Mentés</button>
+                <% if (szerkesztettAr) { %>
+                    <a href="/crud">Mégse</a>
+                <% } %>
+            </div>
+        </form>
+    </section>
+
+    <section class="crud-panel">
+        <h2>Árlista</h2>
+        <% if (arak.length === 0) { %>
+            <p>Még nincsenek felvett árak.</p>
+        <% } else { %>
+            <div class="crud-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Azonosító</th>
+                            <th scope="col">Sütemény</th>
+                            <th scope="col">Ár (Ft)</th>
+                            <th scope="col">Egység</th>
+                            <th scope="col">Műveletek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% arak.forEach(ar => { %>
+                            <tr>
+                                <td><%= ar.id %></td>
+                                <td><%= sutiNevek.get(ar.sutiid) ?? "Ismeretlen sütemény" %></td>
+                                <td><%= ar.ertek %></td>
+                                <td><%= ar.egyseg || "–" %></td>
+                                <td>
+                                    <div class="crud-row-actions">
+                                        <a href="/crud/<%= ar._id %>/edit">Szerkesztés</a>
+                                        <form method="post" action="/crud/<%= ar._id %>/delete"
+                                              onsubmit="return confirm('Biztosan törlöd ezt az árat?')">
+                                            <input type="hidden" name="crudToken" value="<%= crudToken %>">
+                                            <button type="submit">Törlés</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </section>
 </main>
 
 <%- include("partials/footer") %>

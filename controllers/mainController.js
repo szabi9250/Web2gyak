@@ -4,6 +4,7 @@ const Suti = require("../models/Suti");
 const Ar = require("../models/Ar");
 const Tartalom = require("../models/Tartalom");
 const Message = require("../models/Message");
+const { randomBytes } = require("node:crypto");
 
 exports.homeIndex = (req, res) => { res.render("home"); };
 exports.userIndex = (req, res) => { res.render("user"); };
@@ -81,13 +82,94 @@ exports.contactPost = async (req, res) => {
 };
 
 exports.crudIndex = async (req, res) => {
+    const { arId } = req.params;
+
     const [arak, sutik] = await Promise.all([
         Ar.find().sort({ id: 1 }).lean(),
-        Suti.find().lean()
+        Suti.find().sort({ nev: 1 }).lean()
     ]);
 
+    const szerkesztettAr = arId
+        ? arak.find(ar => String(ar._id) === arId)
+        : null;
+
+    if (arId && !szerkesztettAr) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
     const sutiNevek = new Map(sutik.map(suti => [suti.id, suti.nev]));
-    res.render("crud", { arak, sutiNevek });
+    req.session.crudToken ??= randomBytes(32).toString("hex");
+
+    res.render("crud", {
+        arak,
+        sutik,
+        sutiNevek,
+        szerkesztettAr,
+        crudToken: req.session.crudToken
+    });
+};
+
+exports.crudSave = async (req, res) => {
+    const { arId } = req.params;
+    const { id, sutiid, ertek, egyseg, crudToken } = req.body ?? {};
+
+    if (!req.session.crudToken || crudToken !== req.session.crudToken) {
+        return res.status(403).send("Érvénytelen űrlap. Nyisd meg újra a CRUD oldalt.");
+    }
+
+    if (arId && !/^[a-f\d]{24}$/i.test(arId)) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
+    const isInteger = value =>
+        typeof value === "string" &&
+        /^\d+$/.test(value) &&
+        Number.isSafeInteger(Number(value));
+
+    const unit = typeof egyseg === "string" ? egyseg.trim() : "";
+    const formUrl = arId ? `/crud/${arId}/edit` : "/crud";
+
+    if ((!arId && (!isInteger(id) || Number(id) < 1)) ||
+        !isInteger(sutiid) || Number(sutiid) < 1 ||
+        !isInteger(ertek) || unit.length > 50) {
+        req.session.message = "Ellenőrizd az azonosítót, az árat és az egységet.";
+        return res.redirect(303, formUrl);
+    }
+
+    if (!(await Suti.exists({ id: Number(sutiid) }))) {
+        req.session.message = "Válassz egy létező süteményt.";
+        return res.redirect(303, formUrl);
+    }
+
+    const adatok = {
+        sutiid: Number(sutiid),
+        ertek: Number(ertek),
+        egyseg: unit || null
+    };
+
+    try {
+        if (arId) {
+            const eredmeny = await Ar.updateOne(
+                { _id: arId },
+                { $set: adatok },
+                { runValidators: true }
+            );
+
+            if (eredmeny.matchedCount === 0) {
+                return res.status(404).send("Az ár nem található.");
+            }
+        } else {
+            await Ar.create({ id: Number(id), ...adatok });
+        }
+    } catch (error) {
+        if (error.code !== 11000) throw error;
+
+        req.session.message = "Ez az árazonosító már foglalt.";
+        return res.redirect(303, formUrl);
+    }
+
+    req.session.message = arId ? "Az ár módosítva." : "Az új ár elmentve.";
+    return res.redirect(303, "/crud");
 };
 exports.databaseIndex = async (req, res) => {
     try {

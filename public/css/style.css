@@ -3351,3 +3351,132 @@ input, select, textarea {
 			}
 
 	}
+
+	.auth-page {
+    padding: clamp(2rem, 7vw, 5rem) 1rem;
+}
+
+.auth-card {
+    max-width: 28rem;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 5vw, 2.25rem);
+    background: #fff;
+    border: 1px solid #dde5e9;
+    border-radius: 1rem;
+    box-shadow: 0 12px 32px rgba(21, 38, 49, 0.09);
+}
+
+.auth-card h1 {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+.auth-card form {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+}
+
+.auth-card label {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.auth-card input,
+.auth-card button {
+    width: 100%;
+}
+
+.auth-card .auth-message {
+    padding: 0.75rem 1rem;
+    background: #edf6fa;
+    border-radius: 0.5rem;
+}
+
+.auth-card .auth-switch {
+    margin: 1.25rem 0 0;
+    text-align: center;
+}
+
+.crud-page {
+    padding: 2rem 0;
+}
+
+.crud-page h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.crud-panel {
+    padding: clamp(1rem, 4vw, 1.75rem);
+    margin-bottom: 1.5rem;
+    background: #fff;
+    border: 1px solid #dde5e9;
+    border-radius: 1rem;
+}
+
+.crud-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1rem;
+}
+
+.crud-form label {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.crud-form input[type="number"],
+.crud-form input[type="text"],
+.crud-form select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.7rem;
+    font: inherit;
+    background: #f7f9fa;
+    border: 1px solid #bccbd2;
+    border-radius: 0.4rem;
+}
+
+.crud-form-actions {
+    grid-column: 1 / -1;
+}
+
+.crud-form-actions,
+.crud-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.crud-page form,
+.crud-page table {
+    margin: 0;
+}
+
+.crud-table {
+    overflow-x: auto;
+}
+
+.crud-table table {
+    width: 100%;
+}
+
+.crud-table th,
+.crud-table td {
+    padding: 0.65rem;
+    text-align: left;
+    border-bottom: 1px solid #dde5e9;
+}
+
+.crud-row-actions button {
+    min-width: 0;
+    padding: 0 0.75rem;
+    background: #a12832;
+}
+
+.crud-message {
+    padding: 0.75rem 1rem;
+    background: #edf6fa;
+    border-radius: 0.5rem;
+}

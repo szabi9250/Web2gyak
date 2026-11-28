@@ -147,28 +147,6 @@ exports.crudSave = async (req, res) => {
         egyseg: unit || null
     };
 
-    exports.crudDelete = async (req, res) => {
-    const { arId } = req.params;
-    const { crudToken } = req.body ?? {};
-
-    if (!req.session.crudToken || crudToken !== req.session.crudToken) {
-        return res.status(403).send("Érvénytelen űrlap. Nyisd meg újra a CRUD oldalt.");
-    }
-
-    if (!/^[a-f\d]{24}$/i.test(arId)) {
-        return res.status(404).send("Az ár nem található.");
-    }
-
-    const eredmeny = await Ar.deleteOne({ _id: arId });
-
-    if (eredmeny.deletedCount === 0) {
-        return res.status(404).send("Az ár nem található.");
-    }
-
-    req.session.message = "Az ár törölve.";
-    return res.redirect(303, "/crud");
-};
-
     try {
         if (arId) {
             const eredmeny = await Ar.updateOne(
@@ -193,6 +171,29 @@ exports.crudSave = async (req, res) => {
     req.session.message = arId ? "Az ár módosítva." : "Az új ár elmentve.";
     return res.redirect(303, "/crud");
 };
+
+exports.crudDelete = async (req, res) => {
+    const { arId } = req.params;
+    const { crudToken } = req.body ?? {};
+
+    if (!req.session.crudToken || crudToken !== req.session.crudToken) {
+        return res.status(403).send("Érvénytelen űrlap. Nyisd meg újra a CRUD oldalt.");
+    }
+
+    if (!/^[a-f\d]{24}$/i.test(arId)) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
+    const eredmeny = await Ar.deleteOne({ _id: arId });
+
+    if (eredmeny.deletedCount === 0) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
+    req.session.message = "Az ár törölve.";
+    return res.redirect(303, "/crud");
+};
+
 exports.databaseIndex = async (req, res) => {
     try {
         const arak = await Ar.find().sort({ id: 1 }).lean();
@@ -282,8 +283,8 @@ exports.messagesIndex = async (req, res) => {
     }
 };
 
-
 exports.registerGet = (req, res) => { res.render("register"); };
+
 exports.registerPost = async (req, res) => {
     const existingUser = await User.findOne({ username: req.body.username });
     if (existingUser) {
@@ -297,6 +298,7 @@ exports.registerPost = async (req, res) => {
 };
 
 exports.loginGet = (req, res) => { res.render("login"); };
+
 exports.loginPost = async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
@@ -315,6 +317,7 @@ exports.loginPost = async (req, res) => {
         res.redirect("/user");
     }
 };
+
 exports.logout = (req, res) => {
     req.session.destroy(() => { res.redirect("/"); });
 };

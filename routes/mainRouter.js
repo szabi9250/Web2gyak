@@ -34,5 +34,6 @@ router.get("/crud", isAdmin, controller.crudIndex);
 router.post("/crud", isAdmin, controller.crudSave);
 router.get("/crud/:arId/edit", isAdmin, controller.crudIndex);
 router.post("/crud/:arId/edit", isAdmin, controller.crudSave);
+router.post("/crud/:arId/delete", isAdmin, controller.crudDelete);
 
 module.exports = router;

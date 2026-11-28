@@ -147,6 +147,28 @@ exports.crudSave = async (req, res) => {
         egyseg: unit || null
     };
 
+    exports.crudDelete = async (req, res) => {
+    const { arId } = req.params;
+    const { crudToken } = req.body ?? {};
+
+    if (!req.session.crudToken || crudToken !== req.session.crudToken) {
+        return res.status(403).send("Érvénytelen űrlap. Nyisd meg újra a CRUD oldalt.");
+    }
+
+    if (!/^[a-f\d]{24}$/i.test(arId)) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
+    const eredmeny = await Ar.deleteOne({ _id: arId });
+
+    if (eredmeny.deletedCount === 0) {
+        return res.status(404).send("Az ár nem található.");
+    }
+
+    req.session.message = "Az ár törölve.";
+    return res.redirect(303, "/crud");
+};
+
     try {
         if (arId) {
             const eredmeny = await Ar.updateOne(
